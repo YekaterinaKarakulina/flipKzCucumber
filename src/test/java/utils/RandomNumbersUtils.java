@@ -1,4 +1,4 @@
-package selenium.utils;
+package utils;
 
 import java.util.Random;
 

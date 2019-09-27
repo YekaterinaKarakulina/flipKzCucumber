@@ -3,7 +3,7 @@ package tests.pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import selenium.utils.RandomNumbersUtils;
+import utils.RandomNumbersUtils;
 
 import java.util.List;
 

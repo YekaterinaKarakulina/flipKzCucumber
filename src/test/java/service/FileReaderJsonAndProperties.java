@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import tests.businessObjects.User;
-import selenium.utils.RandomNumbersUtils;
+import utils.RandomNumbersUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,7 +33,7 @@ public class FileReaderJsonAndProperties {
         JsonElement dataSet = jsonObject.getAsJsonObject().get("Users");
         List<User> users = new Gson().fromJson(dataSet, new TypeToken<List<User>>() {
         }.getType());
-        return users.get(RandomNumbersUtils.getRandomNumber(0, 1));
+        return users.get(RandomNumbersUtils.getRandomNumber(0, 0));
     }
 
     public static int getPublicationYearRangeFirstValue() {
