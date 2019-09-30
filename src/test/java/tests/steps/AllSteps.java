@@ -5,6 +5,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.openqa.selenium.WebDriver;
 import driver.WebDriverManager;
 import service.FileReaderJsonAndProperties;
@@ -24,21 +25,20 @@ public class AllSteps {
     private SearchCriteria searchCriteria;
     private ItemPage bookItemPage;
     private SectionPage bookPage;
-    private User user;
+    private User user = FileReaderJsonAndProperties.getUser();
     private List<String> selectedAuthors;
     private List<String> actualAuthors;
     private String bookName;
-    private int publicationYearRangeFirstValue;
-    private int publicationYearRangeLastValue;
+    private int publicationYearRangeFirstValue = FileReaderJsonAndProperties.getPublicationYearRangeFirstValue();
+    private int publicationYearRangeLastValue = FileReaderJsonAndProperties.getPublicationYearRangeLastValue();
     private int actualPublicationYear;
+
+    @BeforeClass
 
     @Given("^Website flip\\.kz is opened$")
     public void websiteFlipKzIsOpened() {
         driver = WebDriverManager.getWebDriverInstance();
-        user = FileReaderJsonAndProperties.getUser();
         homePage = new HomePage(driver).open();
-        publicationYearRangeFirstValue = FileReaderJsonAndProperties.getPublicationYearRangeFirstValue();
-        publicationYearRangeLastValue = FileReaderJsonAndProperties.getPublicationYearRangeLastValue();
     }
 
     @When("^User does login$")
@@ -56,22 +56,24 @@ public class AllSteps {
         searchCriteria = homePage.getMainMenuComponent().clickBookSection().clickImaginativeLiteratureSection();
     }
 
-    @And("^User selects random book author$")
-    public void userSelectsRandomBookAuthor() {
+
+    @And("^User selects random author$")
+    public void userSelectsRandomAuthor() {
         bookPage = searchCriteria.clickRandomAuthor(1);
     }
 
-    @And("^User selects random book authors$")
-    public void userSelectsRandomBookAuthors() {
+
+    @And("^User selects random authors$")
+    public void userSelectsRandomAuthors() {
         bookPage = searchCriteria.clickRandomAuthor(3);
     }
 
-    @And("^User selects random book authors, moves to random result`s page, selects random book$")
-    public void userSelectsRandomBookAuthorsMovesToRandomResultSPageSelectsRandomBook() {
-        bookPage = searchCriteria.clickRandomAuthor(3).moveToRandomPage();
-        selectedAuthors = searchCriteria.getSelectedAuthorsList();
-        bookItemPage = bookPage.clickOnRandomBookCard();
+
+    @And("^User selects (\\d+) authors$")
+    public void userSelectsAuthors(int amountOfAuthors) {
+        bookPage = searchCriteria.clickRandomAuthor(amountOfAuthors);
     }
+
 
     @And("^User set publication year first value$")
     public void userSetPublicationYearFirstValue() {
@@ -87,7 +89,7 @@ public class AllSteps {
 
     @And("^User set publication year range$")
     public void userSetPublicationYearRange() {
-       bookPage = searchCriteria.setPublicationYearFilter(Integer.toString(publicationYearRangeFirstValue), Integer.toString(publicationYearRangeLastValue));
+        bookPage = searchCriteria.setPublicationYearFilter(Integer.toString(publicationYearRangeFirstValue), Integer.toString(publicationYearRangeLastValue));
     }
 
     @And("^User moves to random result`s page, selects random book$")
@@ -98,7 +100,7 @@ public class AllSteps {
 
     @Then("^Random book`s author from result page is selected author$")
     public void randomBookSAuthorFromResultPageIsSelectedAuthor() {
-        Book actualBook = new Book(bookItemPage.getBookName(), bookItemPage.getBookAuthors());
+        Book actualBook = new Book(bookItemPage.getBookAuthors());
         Book expectedBook = new Book(selectedAuthors);
         Assert.assertTrue(actualBook.checkBooksEqualsByAuthorsList(expectedBook, actualBook));
     }
@@ -120,7 +122,7 @@ public class AllSteps {
     public void randomBookSPublicationYearFromResultPageIsLowerOrEqualThenUserEntered() {
         actualPublicationYear = bookItemPage.getBookPublicationYear();
         bookName = bookItemPage.getBookName();
-        Assert.assertTrue(String.format("Actual publication year of book `%s` - %s. Expected year of publication %s.", bookName, Integer.toString(actualPublicationYear), Integer.toString(publicationYearRangeLastValue)),actualPublicationYear <= publicationYearRangeLastValue);
+        Assert.assertTrue(String.format("Actual publication year of book `%s` - %s. Expected year of publication %s.", bookName, Integer.toString(actualPublicationYear), Integer.toString(publicationYearRangeLastValue)), actualPublicationYear <= publicationYearRangeLastValue);
     }
 
 
@@ -128,7 +130,21 @@ public class AllSteps {
     public void randomBookSPublicationYearFromResultPageIsOnRangeUserEntered() {
         actualPublicationYear = bookItemPage.getBookPublicationYear();
         bookName = bookItemPage.getBookName();
-        Assert.assertTrue(String.format("Actual publication year of book `%s` - %s. Expected range of publication %s.", bookName, Integer.toString(actualPublicationYear), Integer.toString(publicationYearRangeFirstValue), Integer.toString(publicationYearRangeLastValue)),publicationYearRangeFirstValue <= actualPublicationYear && actualPublicationYear <= publicationYearRangeLastValue);
+        Assert.assertTrue(String.format("Actual publication year of book `%s` - %s. Expected range of publication %s.", bookName, Integer.toString(actualPublicationYear), Integer.toString(publicationYearRangeFirstValue), Integer.toString(publicationYearRangeLastValue)), publicationYearRangeFirstValue <= actualPublicationYear && actualPublicationYear <= publicationYearRangeLastValue);
     }
+
+    @And("^User set \"(\\d+)\" and \"(\\d+)\" range values$")
+    public void userSetFromAndToRangeValues(int from, int to) throws Throwable {
+        bookPage = searchCriteria.setPublicationYearFilter(Integer.toString(from), Integer.toString(to));
+    }
+
+
+    @And("User set (-?\\d+) and (-?\\d+) range values")
+    public void userSetFromAndToRangeValues(String from, String to) {
+        bookPage = searchCriteria.setPublicationYearFilter(from, to);
+        publicationYearRangeFirstValue = Integer.parseInt(from);
+        publicationYearRangeLastValue = Integer.parseInt(to);
+    }
+
 
 }
