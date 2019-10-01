@@ -5,7 +5,6 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.openqa.selenium.WebDriver;
 import driver.WebDriverManager;
 import service.FileReaderJsonAndProperties;
@@ -33,8 +32,6 @@ public class AllSteps {
     private int publicationYearRangeLastValue = FileReaderJsonAndProperties.getPublicationYearRangeLastValue();
     private int actualPublicationYear;
 
-    @BeforeClass
-
     @Given("^Website flip\\.kz is opened$")
     public void websiteFlipKzIsOpened() {
         driver = WebDriverManager.getWebDriverInstance();
@@ -56,12 +53,10 @@ public class AllSteps {
         searchCriteria = homePage.getMainMenuComponent().clickBookSection().clickImaginativeLiteratureSection();
     }
 
-
     @And("^User selects random author$")
     public void userSelectsRandomAuthor() {
         bookPage = searchCriteria.clickRandomAuthor(1);
     }
-
 
     @And("^User selects random authors$")
     public void userSelectsRandomAuthors() {
@@ -73,7 +68,6 @@ public class AllSteps {
     public void userSelectsAuthors(int amountOfAuthors) {
         bookPage = searchCriteria.clickRandomAuthor(amountOfAuthors);
     }
-
 
     @And("^User set publication year first value$")
     public void userSetPublicationYearFirstValue() {
@@ -125,7 +119,6 @@ public class AllSteps {
         Assert.assertTrue(String.format("Actual publication year of book `%s` - %s. Expected year of publication %s.", bookName, Integer.toString(actualPublicationYear), Integer.toString(publicationYearRangeLastValue)), actualPublicationYear <= publicationYearRangeLastValue);
     }
 
-
     @Then("^Random book`s publication year from result page is on range user entered$")
     public void randomBookSPublicationYearFromResultPageIsOnRangeUserEntered() {
         actualPublicationYear = bookItemPage.getBookPublicationYear();
@@ -138,13 +131,11 @@ public class AllSteps {
         bookPage = searchCriteria.setPublicationYearFilter(Integer.toString(from), Integer.toString(to));
     }
 
-
     @And("User set (-?\\d+) and (-?\\d+) range values")
     public void userSetFromAndToRangeValues(String from, String to) {
         bookPage = searchCriteria.setPublicationYearFilter(from, to);
         publicationYearRangeFirstValue = Integer.parseInt(from);
         publicationYearRangeLastValue = Integer.parseInt(to);
     }
-
 
 }
