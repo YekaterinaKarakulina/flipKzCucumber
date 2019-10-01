@@ -33,7 +33,7 @@ public class FileReaderJsonAndProperties {
         JsonElement dataSet = jsonObject.getAsJsonObject().get("Users");
         List<User> users = new Gson().fromJson(dataSet, new TypeToken<List<User>>() {
         }.getType());
-        return users.get(RandomNumbersUtils.getRandomNumber(0, 0));
+        return users.get(RandomNumbersUtils.getRandomNumber(0, 1));
     }
 
     public static int getPublicationYearRangeFirstValue() {

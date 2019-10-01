@@ -7,6 +7,7 @@ import cucumber.api.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import driver.WebDriverManager;
+import runner.Runner;
 import service.FileReaderJsonAndProperties;
 import tests.businessObjects.Book;
 import tests.businessObjects.User;
@@ -24,7 +25,7 @@ public class AllSteps {
     private SearchCriteria searchCriteria;
     private ItemPage bookItemPage;
     private SectionPage bookPage;
-    private User user = FileReaderJsonAndProperties.getUser();
+    private User user;
     private List<String> selectedAuthors;
     private List<String> actualAuthors;
     private String bookName;
@@ -34,7 +35,8 @@ public class AllSteps {
 
     @Given("^Website flip\\.kz is opened$")
     public void websiteFlipKzIsOpened() {
-        driver = WebDriverManager.getWebDriverInstance();
+        user = Runner.getUser();
+        driver = Runner.getDriver();
         homePage = new HomePage(driver).open();
     }
 
